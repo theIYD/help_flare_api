@@ -5,6 +5,7 @@ const dotenv = require("dotenv").config();
 const app = express();
 
 const routes = require("./routes/index");
+const errorHandler = require("./middlwares/error");
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -31,6 +32,10 @@ app.use((req, res, next) => {
 // CORS
 app.use(cors());
 
+// Parse JSON bodies
+app.use(express.json());
+app.use(express.urlencoded({ extended: true })); //Parse URL-encoded bodies
+
 // Home route
 app.get("/", (req, res, next) => {
   res.json({
@@ -40,7 +45,15 @@ app.get("/", (req, res, next) => {
 });
 
 // Use all the routes
-app.use("/", routes);
+app.use("/api", routes);
+
+// Error middleware
+app.use(errorHandler);
+
+// Handle unhandled promise rejections
+process.on("unhandledRejection", (err, promise) => {
+  console.log(`Error: ${err.message}`.red);
+});
 
 // Listen on a port
 const port = process.env.PORT || 1100;

@@ -25,6 +25,10 @@ const helperSchema = new Schema(
         required: true
       }
     },
+    password: {
+      type: String,
+      required: true
+    },
     social_service: {
       type: String,
       required: false
