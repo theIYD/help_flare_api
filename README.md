@@ -19,3 +19,15 @@
     Registeration of social service groups/NGOs
 
 </details>
+
+<details>
+    <summary><b>POST /login</b></summary>
+
+    Query Params: none
+    FormData:
+        - phone
+        - password
+
+    Sign in of social service groups/NGOs
+
+</details>
