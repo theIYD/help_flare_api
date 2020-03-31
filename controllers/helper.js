@@ -16,6 +16,7 @@ exports.registerHelper = async (req, res, next) => {
   } = req.body;
 
   try {
+    locality = JSON.parse(locality);
     let helper = {
       group_name,
       representative,
