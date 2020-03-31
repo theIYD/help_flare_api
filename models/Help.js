@@ -13,6 +13,18 @@ const helpSchema = new Schema(
         enum: ["Polygon"],
         required: true
       }
+    },
+    reported_by: {
+      type: String,
+      required: true
+    },
+    phone: {
+      type: String,
+      required: true
+    },
+    type_of_help: {
+      type: String,
+      required: true
     }
   },
   {

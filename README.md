@@ -31,3 +31,19 @@
     Sign in of social service groups/NGOs
 
 </details>
+
+<details>
+    <summary><b>POST /report</b></summary>
+
+    Query Params: none
+    FormData:
+        - area_coordinates https://ibb.co/SsVvZYt
+        - reported_by (name)
+        - phone
+        - helpType (description of help needed)
+
+    Note: The `area_coordinates` property contains the lat lng of every point of the polygon.
+
+    Report a help
+
+</details>
