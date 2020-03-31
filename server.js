@@ -4,10 +4,17 @@ const cors = require("cors");
 const dotenv = require("dotenv").config();
 const app = express();
 
+const routes = require("./routes/index");
+
 mongoose
-  .connect(process.env.MONGODB_URI)
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true
+  })
   .then(result => {
-    console.log("Databse is connected");
+    console.log("Database is connected");
   })
   .catch(err => console.log(err));
 
@@ -19,4 +26,28 @@ app.use((req, res, next) => {
     "GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS"
   );
   next();
+});
+
+// CORS
+app.use(cors());
+
+// Home route
+app.get("/", (req, res, next) => {
+  res.json({
+    error: 0,
+    message: "COVID Help API"
+  });
+});
+
+// Use all the routes
+app.use("/", routes);
+
+// Listen on a port
+const port = process.env.PORT || 1100;
+let server = app.listen(port, err => {
+  if (err) {
+    console.log(`Error while starting the server on port ${port}`);
+  } else {
+    console.log(`Server connected on port ${port}`);
+  }
 });
