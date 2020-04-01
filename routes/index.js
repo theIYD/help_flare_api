@@ -12,7 +12,7 @@ router.route("/helper").post(upload.none(), helperController.registerHelper);
 router.route("/login").post(upload.none(), helperController.login);
 
 // Report help
-router.route("/report").post(upload.none(), helpController.reportHelp);
+router.route("/report_help").post(upload.none(), helpController.reportHelp);
 
 // Help
 router.route("/help").post(verifyToken, upload.none(), helpController.help);

@@ -33,7 +33,7 @@
 </details>
 
 <details>
-    <summary><b>POST /report</b></summary>
+    <summary><b>POST /report_help</b></summary>
 
     Query Params: none
     FormData:
