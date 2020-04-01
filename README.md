@@ -42,7 +42,7 @@
         - phone
         - helpType (description of help needed)
 
-    Note: The `area_coordinates` property contains the lat lng of every point of the polygon.
+    Note: The `area_coordinates` property contains the lat lng of every point of the polygon. Make sure all the coordinates are of `Double` type
 
     Report a help
 

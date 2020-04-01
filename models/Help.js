@@ -34,4 +34,8 @@ const helpSchema = new Schema(
   }
 );
 
+helpSchema.index({
+  area: "2dsphere"
+});
+
 module.exports = mongoose.model("Help", helpSchema, "helps");
