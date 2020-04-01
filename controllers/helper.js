@@ -10,10 +10,11 @@ exports.registerHelper = async (req, res, next) => {
     group_name,
     representative,
     phone,
-    locality,
     password,
     social_service
   } = req.body;
+
+  let { locality } = req.body;
 
   try {
     locality = JSON.parse(locality);
