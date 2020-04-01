@@ -22,15 +22,42 @@ exports.reportHelp = async (req, res, next) => {
     const saveHelpInstance = await helpInstance.save();
 
     if (saveHelpInstance) {
-      res
-        .status(201)
-        .json({
-          error: 0,
-          message: "Thank you for reporting",
-          helpId: helpInstance._id
-        });
+      res.status(201).json({
+        error: 0,
+        message: "Thank you for reporting",
+        helpId: helpInstance._id
+      });
     }
   } catch (err) {
     next(err);
   }
+};
+
+// Get realtime reports on every connection
+exports.getReports = async (io, socket) => {
+  console.log("New connection");
+  socket.on("new_report", async data => {
+    console.log(data);
+    let query = {
+      area: {
+        $near: {
+          $geometry: {
+            type: "Point",
+            coordinates: [data.lat, data.lng].map(parseFloat)
+          },
+          $minDistance: 0,
+          $maxDistance: 1000
+        }
+      }
+    };
+
+    try {
+      let reportsFound = await Help.find(query);
+      if (reportsFound) {
+        io.emit("reports", reportsFound);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  });
 };

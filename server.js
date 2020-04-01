@@ -64,3 +64,9 @@ let server = app.listen(port, err => {
     console.log(`Server connected on port ${port}`);
   }
 });
+
+const io = require("socket.io").listen(server);
+const getReportsSocket = require("./controllers/help");
+io.sockets.on("connection", socket => {
+  getReportsSocket.getReports(io, socket);
+});
