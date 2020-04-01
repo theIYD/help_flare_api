@@ -3,9 +3,11 @@ const Help = require("../models/Help");
 
 // Report a help
 exports.reportHelp = async (req, res, next) => {
+  let coords = JSON.parse(req.body.area_coordinates);
+  console.log(coords);
   let newHelp = {
     area: {
-      coordinates: [req.body.area_coordinates],
+      coordinates: [],
       type: "Polygon"
     },
     reported_by: req.body.reported_by,
