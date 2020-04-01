@@ -48,34 +48,34 @@
 
 </details>
 
-<details>
-    <summary><b>Get reports in real time</b></summary>
+<details><summary><b>Get reports in real time</b></summary>
+<p>
 
-    1. Initialize socket on the client
+1. Initialize socket on the client
 
-    ```javascript
-        let socket = io("https://https://covid-project-api.herokuapp.com/")
-    ```
+```javascript
+let socket = io("https://https://covid-project-api.herokuapp.com/")
+```
 
-    2. On getting the location of the device from the browser, emit an event to get new reports
+2. On getting the location of the device from the browser, emit an event to get new reports
 
-    ```javascript
-        socket.emit("new_report", { lat: pos.lat, lng: pos.lng });
-    ```
+```javascript
+socket.emit("new_report", { lat: pos.lat, lng: pos.lng });
+```
 
-    3. After submission of a new report, again emit an event for getting new reports
+3. After submission of a new report, again emit an event for getting new reports
 
-    ```javascript
-        socket.emit("new_report", { lat: pos.lat, lng: pos.lng });
-    ```
+```javascript
+socket.emit("new_report", { lat: pos.lat, lng: pos.lng });
+```
 
-    4. Listen for new reports to be displayed onto the Google map
+4. Listen for new reports to be displayed onto the Google map
 
-    ```javascript
-        socket.on("reports", data => {
-            console.log(data);
-            // => Report objects are received
-        })
-    ```
-
+```javascript
+socket.on("reports", data => {
+    console.log(data);
+    // => Report objects are received
+});
+```
+</p>
 </details>
