@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Help = require("../models/Help");
 
 // Report a help
@@ -52,7 +53,9 @@ exports.getReports = async (io, socket) => {
     };
 
     try {
-      let helpsFound = await Help.find(query);
+      let helpsFound = await Help.find(query)
+        .populate("helped_by")
+        .select("group_name representative contact");
       if (reportsFound) {
         io.emit("helps", helpsFound);
       }
@@ -71,7 +74,7 @@ exports.help = async (req, res, next) => {
     try {
       const updateHelp = await Help.findOneAndUpdate(
         { _id: helpId },
-        { $push: { helped_by: userId } },
+        { $push: { helped_by: mongoose.Types.ObjectId(userId) } },
         { new: true }
       );
 

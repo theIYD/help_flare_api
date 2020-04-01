@@ -28,6 +28,7 @@ const helpSchema = new Schema(
     },
     helped_by: {
       type: Array,
+      ref: "Helper",
       default: []
     }
   },
