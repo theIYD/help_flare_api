@@ -56,9 +56,10 @@ exports.getHelps = async (io, socket) => {
     };
 
     try {
-      let helpsFound = await Help.find(query)
-        .populate("helped_by")
-        .select("group_name representative contact");
+      let helpsFound = await Help.find(query).populate(
+        "helped_by",
+        "group_name representative contact"
+      );
       if (helpsFound) {
         io.emit("helps", helpsFound);
       }
