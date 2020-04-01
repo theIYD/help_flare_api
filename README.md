@@ -93,3 +93,14 @@ socket.on("helps", data => {
     Assign the help to the logged in helper
 
 </details>
+
+<details>
+    <summary><b>GET /profile</b></summary>
+
+    Query Params: none
+    Authorization: Bearer <token>
+    FormData: none
+
+    Profile of the helper
+
+</details>

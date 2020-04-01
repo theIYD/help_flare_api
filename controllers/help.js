@@ -7,7 +7,7 @@ exports.reportHelp = async (req, res, next) => {
   console.log(coords);
   let newHelp = {
     area: {
-      coordinates: [],
+      coordinates: [coords],
       type: "Polygon"
     },
     reported_by: req.body.reported_by,

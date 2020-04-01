@@ -17,4 +17,9 @@ router.route("/report_help").post(upload.none(), helpController.reportHelp);
 // Help
 router.route("/help").post(verifyToken, upload.none(), helpController.help);
 
+// Profile
+router
+  .route("/profile")
+  .get(verifyToken, upload.none(), helperController.profile);
+
 module.exports = router;

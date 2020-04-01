@@ -92,3 +92,46 @@ exports.login = async (req, res, next) => {
     next(err);
   }
 };
+
+// Profile route
+exports.profile = async (req, res, next) => {
+  const { userId } = res.locals;
+
+  try {
+    const helper = await Helper.findOne({ _id: userId });
+    if (helper) {
+      let {
+        group_name,
+        representative,
+        contact,
+        locality,
+        social_service
+      } = helper;
+
+      if (social_service) {
+        return res.status(200).json({
+          error: 0,
+          helper: {
+            group_name,
+            representative,
+            contact,
+            locality,
+            social_service
+          }
+        });
+      } else {
+        return res.status(200).json({
+          error: 0,
+          helper: {
+            group_name,
+            representative,
+            contact,
+            locality
+          }
+        });
+      }
+    }
+  } catch (err) {
+    next(err);
+  }
+};
