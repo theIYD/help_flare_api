@@ -13,7 +13,7 @@ exports.reportHelp = async (req, res, next) => {
     },
     reported_by: req.body.reported_by,
     phone: req.body.phone,
-    type_of_help: req.body.help_type
+    type_of_help: req.body.helpType
   };
 
   try {
