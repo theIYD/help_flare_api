@@ -38,7 +38,7 @@ exports.reportHelp = async (req, res, next) => {
 };
 
 // Get realtime reports on every connection
-exports.getReports = async (io, socket) => {
+exports.getHelps = async (io, socket) => {
   console.log("New connection");
   socket.on("new_help", async data => {
     console.log(data);
@@ -59,7 +59,7 @@ exports.getReports = async (io, socket) => {
       let helpsFound = await Help.find(query)
         .populate("helped_by")
         .select("group_name representative contact");
-      if (reportsFound) {
+      if (helpsFound) {
         io.emit("helps", helpsFound);
       }
     } catch (err) {

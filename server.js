@@ -66,7 +66,7 @@ let server = app.listen(port, err => {
 });
 
 const io = require("socket.io").listen(server);
-const getReportsSocket = require("./controllers/help");
+const getHelpsSocket = require("./controllers/help");
 io.sockets.on("connection", socket => {
-  getReportsSocket.getReports(io, socket);
+  getHelpsSocket.getHelps(io, socket);
 });
