@@ -10,12 +10,14 @@ const verifyToken = async (req, res, next) => {
     try {
       const decoded = await verify(bearerToken, process.env.JWT_SECRET);
       if (decoded) {
-        for (let key in decoded) {
-          res.locals[key] = decoded[key];
+        for (let key in decoded.user) {
+          res.locals[key] = decoded.user[key];
         }
+
+        next();
       }
     } catch (err) {
-      next(err);
+      return res.status(401).json({ error: 1, message: "Token expired" });
     }
   } else {
     // Forbidden

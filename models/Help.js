@@ -25,6 +25,10 @@ const helpSchema = new Schema(
     type_of_help: {
       type: String,
       required: true
+    },
+    helped_by: {
+      type: Array,
+      default: []
     }
   },
   {

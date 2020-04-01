@@ -48,34 +48,48 @@
 
 </details>
 
-<details><summary><b>Get reports in real time</b></summary>
+<details><summary><b>Get helps in real time</b></summary>
 <p>
 
 1. Initialize socket on the client
 
 ```javascript
-let socket = io("https://https://covid-project-api.herokuapp.com/")
+let socket = io("https://https://covid-project-api.herokuapp.com/");
 ```
 
-2. On getting the location of the device from the browser, emit an event to get new reports
+2. On getting the location of the device from the browser, emit an event to get new helps
 
 ```javascript
-socket.emit("new_report", { lat: pos.lat, lng: pos.lng });
+socket.emit("new_help", { lat: pos.lat, lng: pos.lng });
 ```
 
-3. After submission of a new report, again emit an event for getting new reports
+3. After submission of a new help, again emit an event for getting new helps
 
 ```javascript
-socket.emit("new_report", { lat: pos.lat, lng: pos.lng });
+socket.emit("new_help", { lat: pos.lat, lng: pos.lng });
 ```
 
-4. Listen for new reports to be displayed onto the Google map
+4. Listen for new helps to be displayed onto the Google map
 
 ```javascript
-socket.on("reports", data => {
-    console.log(data);
-    // => Report objects are received
+socket.on("helps", data => {
+  console.log(data);
+  // => Report objects are received
 });
 ```
+
 </p>
+</details>
+
+<details>
+    <summary><b>POST /help</b></summary>
+
+    Query Params:
+        - helpId
+
+    Authorization: Bearer <token>
+    FormData: none
+
+    Assign the help to the logged in helper
+
 </details>
