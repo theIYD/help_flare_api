@@ -32,7 +32,13 @@ const helperSchema = new Schema(
     social_service: {
       type: String,
       required: false
-    }
+    },
+    helps: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Help"
+      }
+    ]
   },
   {
     timestamps: {

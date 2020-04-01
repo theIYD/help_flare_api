@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Help = require("../models/Help");
+const Helper = require("../models/Helper");
 
 // Report a help
 exports.reportHelp = async (req, res, next) => {
@@ -80,7 +81,15 @@ exports.help = async (req, res, next) => {
         { new: true }
       );
 
-      if (updateHelp) {
+      const updateHelper = await Helper.findOneAndUpdate(
+        { _id: userId },
+        {
+          $push: { helps: mongoose.Types.ObjectId(helpId) }
+        },
+        { new: true }
+      );
+
+      if (updateHelp && updateHelper) {
         res.status(200).json({
           error: 0,
           message: `Helper ${userId} was added for help ${helpId}`,

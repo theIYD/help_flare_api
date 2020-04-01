@@ -26,11 +26,13 @@ const helpSchema = new Schema(
       type: String,
       required: true
     },
-    helped_by: {
-      type: Array,
-      ref: "Helper",
-      default: []
-    }
+    helped_by: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Helper",
+        default: []
+      }
+    ]
   },
   {
     timestamps: {
