@@ -32,7 +32,7 @@ exports.registerHelper = async (req, res, next) => {
       };
 
       if (social_service) {
-        helper["social_service"] = social_service;
+        helper["social_service"] = JSON.parse(social_service);
       }
 
       if (locality.lat && locality.lng) {

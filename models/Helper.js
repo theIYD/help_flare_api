@@ -30,7 +30,7 @@ const helperSchema = new Schema(
       required: true
     },
     social_service: {
-      type: String,
+      type: Array,
       required: false
     },
     helps: [

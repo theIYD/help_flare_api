@@ -15,7 +15,7 @@ exports.reportHelp = async (req, res, next) => {
     },
     reported_by: req.body.reported_by,
     phone: req.body.phone,
-    type_of_help: req.body.helpType
+    type_of_help: JSON.parse(req.body.helpType)
   };
 
   try {

@@ -14,7 +14,7 @@
         - phone
         - password
         - locality (object of lat and lng)
-        - social_service (optional)
+        - social_service (optional: Should be stringified array)
 
     Registeration of social service groups/NGOs
 
@@ -40,7 +40,7 @@
         - area_coordinates https://ibb.co/SsVvZYt
         - reported_by (name)
         - phone
-        - helpType (description of help needed)
+        - helpType (description of help needed, should be a stringified array)
 
     Note: The `area_coordinates` property contains the lat lng of every point of the polygon. Make sure all the coordinates are of `Double` type
 
