@@ -23,7 +23,7 @@ const helpSchema = new Schema(
       required: true
     },
     type_of_help: {
-      type: String,
+      type: Array,
       required: true
     },
     status: {
