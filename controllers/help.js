@@ -124,7 +124,7 @@ exports.helpDone = async (req, res, next) => {
       }
     });
 
-    let photoUrl = `${process.env.S3_CF}/photos/${req.file.key}`;
+    let photoUrl = `${process.env.S3_CF}/${req.file.key}`;
     if (photoUrl) {
       let verifyHelp = findHelp._id.toString() === helpId;
       if (findHelp && verifyHelp) {
