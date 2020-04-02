@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const Help = require("../models/Help");
 const Helper = require("../models/Helper");
 
+const { photo } = require("../middlwares/photoUpload");
+
 // Report a help
 exports.reportHelp = async (req, res, next) => {
   let coords = JSON.parse(req.body.area_coordinates);
@@ -71,38 +73,96 @@ exports.getHelps = async (io, socket) => {
 
 // Help an area
 exports.help = async (req, res, next) => {
-  const { userId } = res.locals;
   const helpId = req.query.helpId;
 
-  if (userId) {
-    try {
+  try {
+    const findHelp = await Help.findOne({ _id: helpId });
+    if (findHelp.status) {
+      return res.status(200).json({
+        error: 1,
+        message: "Help is under delivery for this area."
+      });
+    } else {
       const updateHelp = await Help.findOneAndUpdate(
         { _id: helpId },
-        { $push: { helped_by: mongoose.Types.ObjectId(userId) } },
-        { new: true }
-      );
-
-      const updateHelper = await Helper.findOneAndUpdate(
-        { _id: userId },
         {
-          $push: { helps: mongoose.Types.ObjectId(helpId) }
+          $set: { status: 1 }
         },
         { new: true }
       );
 
-      if (updateHelp && updateHelper) {
+      if (updateHelp) {
         res.status(200).json({
           error: 0,
-          message: `Helper ${userId} was added for help ${helpId}`,
+          message: `Helper was assigned the help.`,
           help: updateHelp
         });
       }
-    } catch (err) {
-      next(err);
     }
-  } else {
-    res
+  } catch (err) {
+    next(err);
+  }
+};
+
+// Help delivered for an area
+exports.helpDone = async (req, res, next) => {
+  const { userId } = res.locals;
+  const { helpId, lat, lng } = req.query;
+
+  if (!userId) {
+    return res
       .status(403)
       .json({ error: 1, message: "It seems you are not logged in" });
+  }
+
+  if (helpId) {
+    const findHelp = await Help.findOne({
+      area: {
+        $geoIntersects: {
+          $geometry: { type: "Point", coordinates: [lat, lng] }
+        }
+      }
+    });
+
+    let photoUrl = `${process.env.S3_CF}/photos/${req.file.key}`;
+    if (photoUrl) {
+      let verifyHelp = findHelp._id.toString() === helpId;
+      if (findHelp && verifyHelp) {
+        const updateHelpAfterDelivery = await Help.findOneAndUpdate(
+          { _id: helpId },
+          {
+            $set: { status: 0 },
+            $push: { helped_by: mongoose.Types.ObjectId(userId) }
+          },
+          { new: true }
+        );
+
+        const updateHelper = await Helper.findOneAndUpdate(
+          { _id: userId },
+          {
+            $push: {
+              helps: {
+                photo: photoUrl,
+                helpId: mongoose.Types.ObjectId(helpId)
+              }
+            }
+          },
+          { new: true }
+        );
+
+        if (updateHelpAfterDelivery && updateHelper) {
+          return res
+            .status(200)
+            .json({ error: 0, message: "Help was delivered successfully!" });
+        }
+      } else {
+        return res.status(200).json({
+          error: 1,
+          message: "It seems you are not at the location"
+        });
+      }
+    }
+  } else {
+    return res.status(200).json({ error: 1, message: "HelpId was not found" });
   }
 };

@@ -35,8 +35,11 @@ const helperSchema = new Schema(
     },
     helps: [
       {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Help"
+        helpId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Help"
+        },
+        photo: String
       }
     ]
   },

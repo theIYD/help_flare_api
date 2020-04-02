@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const upload = require("multer")();
 const { verifyToken } = require("../middlwares/token");
+const { photo } = require("../middlwares/photoUpload");
 
 const helperController = require("../controllers/helper");
 const helpController = require("../controllers/help");
@@ -16,6 +17,11 @@ router.route("/report_help").post(upload.none(), helpController.reportHelp);
 
 // Help
 router.route("/help").post(verifyToken, upload.none(), helpController.help);
+
+// Help was delivered
+router
+  .route("/help/verify")
+  .post(verifyToken, photo.single("photo"), helpController.helpDone);
 
 // Profile
 router

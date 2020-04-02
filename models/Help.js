@@ -26,6 +26,10 @@ const helpSchema = new Schema(
       type: String,
       required: true
     },
+    status: {
+      type: Number,
+      default: 0
+    },
     helped_by: [
       {
         type: mongoose.Schema.Types.ObjectId,

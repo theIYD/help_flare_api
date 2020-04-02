@@ -95,6 +95,22 @@ socket.on("helps", data => {
 </details>
 
 <details>
+    <summary><b>POST /help/verify</b></summary>
+
+    Query Params:
+        - helpId
+        - lat
+        - lng
+
+    Authorization: Bearer <token>
+    FormData:
+        - photo (clicked by the camera)
+
+    Verify delivery of help
+
+</details>
+
+<details>
     <summary><b>GET /profile</b></summary>
 
     Query Params: none

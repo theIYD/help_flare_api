@@ -98,10 +98,10 @@ exports.profile = async (req, res, next) => {
   const { userId } = res.locals;
 
   try {
-    const helper = await Helper.findOne({ _id: userId }).populate(
-      "helps",
-      "-helped_by"
-    );
+    const helper = await Helper.findOne({ _id: userId }).populate({
+      path: "helps.helpId",
+      select: "-helped_by"
+    });
     if (helper) {
       let {
         group_name,
