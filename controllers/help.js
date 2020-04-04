@@ -2,8 +2,6 @@ const mongoose = require("mongoose");
 const Help = require("../models/Help");
 const Helper = require("../models/Helper");
 
-const { photo } = require("../middlwares/photoUpload");
-
 // Report a help
 exports.reportHelp = async (req, res, next) => {
   let coords = JSON.parse(req.body.area_coordinates);
@@ -15,7 +13,8 @@ exports.reportHelp = async (req, res, next) => {
     },
     reported_by: req.body.reported_by,
     phone: req.body.phone,
-    type_of_help: JSON.parse(req.body.helpType)
+    type_of_help: JSON.parse(req.body.helpType),
+    place: req.body.place
   };
 
   try {

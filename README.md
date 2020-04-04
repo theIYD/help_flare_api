@@ -48,9 +48,10 @@
 
     Query Params: none
     FormData:
-        - area_coordinates https://ibb.co/SsVvZYt (send `place` along with this in a object e.g `{ area_coordinates: [], place: "Andheri" }`)
+        - area_coordinates https://ibb.co/SsVvZYt
         - reported_by (name)
         - phone
+        - place (short version of area_coordinates)
         - helpType (description of help needed, should be a stringified array)
 
     Note: The `area_coordinates` property contains the lat lng of every point of the polygon. Make sure all the coordinates are of `Double` type
