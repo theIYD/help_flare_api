@@ -30,7 +30,9 @@ exports.registerHelper = async (req, res, next) => {
         findHelper.otp = response.otp;
         const saveFindHelperInstance = await findHelper.save();
         if (saveFindHelperInstance) {
-          return res.status(200).json({ error: 0, message: "OTP was sent" });
+          return res
+            .status(200)
+            .json({ error: 0, message: "OTP was sent", isVerified: false });
         }
       } else {
         return res.status(500).json({
@@ -177,7 +179,7 @@ exports.login = async (req, res, next) => {
             if (saveFindHelperInstance) {
               return res
                 .status(200)
-                .json({ error: 0, message: "OTP was sent" });
+                .json({ error: 0, message: "OTP was sent", isVerified: false });
             }
           } else {
             return res.status(500).json({
