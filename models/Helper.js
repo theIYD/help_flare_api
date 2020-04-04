@@ -53,9 +53,12 @@ const helperSchema = new Schema(
         default: []
       }
     ],
-    verified: {
+    isVerified: {
       type: Boolean,
       default: false
+    },
+    otp: {
+      type: String
     }
   },
   {

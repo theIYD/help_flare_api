@@ -1,8 +1,10 @@
 const bcrypt = require("bcryptjs");
+const OTP = require("automatic-otp");
 
 const Helper = require("../models/Helper");
 
 const { createAccessToken, sendAccessToken } = require("../middlwares/token");
+const { sendOTP, otpConfirmed } = require("../middlwares/otp");
 
 // Registeration of a helper
 exports.registerHelper = async (req, res, next) => {
@@ -44,12 +46,21 @@ exports.registerHelper = async (req, res, next) => {
         const hashedPassword = await bcrypt.hash(password, 12);
         if (hashedPassword) {
           helper.password = hashedPassword;
-          const helperInstance = new Helper(helper);
-          const saveHelperInstance = await helperInstance.save();
-          if (saveHelperInstance) {
-            res
-              .status(201)
-              .json({ error: 0, message: "Helper was registered" });
+          let response = await sendOTP({ phone: helper.contact });
+          if (response.success) {
+            helper.otp = response.otp;
+            const helperInstance = new Helper(helper);
+            const saveHelperInstance = await helperInstance.save();
+            if (saveHelperInstance) {
+              res
+                .status(201)
+                .json({ error: 0, message: "Helper was registered" });
+            }
+          } else {
+            return res.status(500).json({
+              error: 1,
+              message: "OTP could not be generated. Try again"
+            });
           }
         }
       } else {
@@ -60,6 +71,31 @@ exports.registerHelper = async (req, res, next) => {
     }
   } catch (err) {
     next(err);
+  }
+};
+
+// Verify OTP
+exports.verifyOTP = async (req, res, next) => {
+  const { otp } = req.body;
+  if (otp) {
+    try {
+      const findHelper = await Helper.findOne({ otp });
+      if (!findHelper.isVerified) {
+        findHelper.isVerified = true;
+        findHelper.otp = undefined;
+        const upgradeHelper = await findHelper.save();
+        if (upgradeHelper) {
+          const sendConfirmationMessage = await otpConfirmed({
+            phone: findHelper.contact
+          });
+          res.status(200).json({ error: 0, message: "OTP verified" });
+        }
+      } else {
+        res.status(200).json({ error: 0, message: "OTP already verified" });
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 };
 

@@ -21,6 +21,17 @@
 </details>
 
 <details>
+    <summary><b>POST /helper/verify</b></summary>
+
+    Query Params: none
+    FormData:
+        - otp
+
+    Verify OTP
+
+</details>
+
+<details>
     <summary><b>POST /login</b></summary>
 
     Query Params: none

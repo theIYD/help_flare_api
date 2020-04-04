@@ -9,6 +9,8 @@ const helpController = require("../controllers/help");
 // Create a new helper
 router.route("/helper").post(upload.none(), helperController.registerHelper);
 
+router.route("/helper/verify").post(upload.none(), helperController.verifyOTP);
+
 // Login
 router.route("/login").post(upload.none(), helperController.login);
 
