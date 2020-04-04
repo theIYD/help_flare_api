@@ -20,54 +20,79 @@ exports.registerHelper = async (req, res, next) => {
   let { locality } = req.body;
 
   try {
-    const findHelper = await Helper.findOne({ contact: phone });
+    const findHelper = await Helper.findOne({
+      contact: phone,
+      isVerified: false
+    });
     if (findHelper) {
-      return res
-        .status(200)
-        .json({ error: 1, message: "Phone number is already registered" });
-    } else {
-      // locality = JSON.parse(locality);
-      let helper = {
-        group_name,
-        representative,
-        contact: phone,
-        locality: {}
-      };
-
-      if (social_service) {
-        helper["social_service"] = JSON.parse(social_service);
-      }
-
-      if (locality.lat && locality.lng) {
-        helper.locality.lat = locality.lat;
-        helper.locality.lng = locality.lng;
-        helper.locality.place = locality.place;
-
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(password, 12);
-        if (hashedPassword) {
-          helper.password = hashedPassword;
-          let response = await sendOTP({ phone: helper.contact });
-          if (response.success) {
-            helper.otp = response.otp;
-            const helperInstance = new Helper(helper);
-            const saveHelperInstance = await helperInstance.save();
-            if (saveHelperInstance) {
-              res
-                .status(201)
-                .json({ error: 0, message: "Helper was registered" });
-            }
-          } else {
-            return res.status(500).json({
-              error: 1,
-              message: "OTP could not be generated. Try again"
-            });
-          }
+      let response = await sendOTP({ phone: findHelper.contact });
+      if (response.success) {
+        findHelper.otp = response.otp;
+        const saveFindHelperInstance = await findHelper.save();
+        if (saveFindHelperInstance) {
+          return res.status(200).json({ error: 0, message: "OTP was sent" });
         }
       } else {
-        res
-          .status(200)
-          .json({ error: 1, message: "Missing locality lat and lng" });
+        return res.status(500).json({
+          error: 1,
+          message: "OTP could not be generated. Try again"
+        });
+      }
+    } else {
+      const alreadyRegistered = await Helper.findOne({
+        contact: phone,
+        isVerified: true
+      });
+
+      if (alreadyRegistered) {
+        return res.status(200).json({
+          error: 1,
+          message: "Account is already registered with this phone number"
+        });
+      } else {
+        locality = JSON.parse(locality);
+        let helper = {
+          group_name,
+          representative,
+          contact: phone,
+          locality: {}
+        };
+
+        if (social_service) {
+          helper["social_service"] = JSON.parse(social_service);
+        }
+
+        if (locality.lat && locality.lng) {
+          helper.locality.lat = locality.lat;
+          helper.locality.lng = locality.lng;
+          helper.locality.place = locality.place;
+
+          // Hash the password
+          const hashedPassword = await bcrypt.hash(password, 12);
+          if (hashedPassword) {
+            helper.password = hashedPassword;
+            let response = await sendOTP({ phone: helper.contact });
+            if (response.success) {
+              helper.otp = response.otp;
+              const helperInstance = new Helper(helper);
+              const saveHelperInstance = await helperInstance.save();
+              if (saveHelperInstance) {
+                res
+                  .status(201)
+                  .json({ error: 0, message: "Helper was registered" });
+              }
+            } else {
+              return res.status(500).json({
+                error: 1,
+                message: "OTP could not be generated. Try again"
+              });
+            }
+          }
+        } else {
+          res
+            .status(200)
+            .json({ error: 1, message: "Missing locality lat and lng" });
+        }
       }
     }
   } catch (err) {
@@ -140,12 +165,10 @@ exports.login = async (req, res, next) => {
             .json({ error: 1, message: "Password is invalid" });
         }
       } else {
-        res
-          .status(200)
-          .json({
-            error: 1,
-            message: "User not found/Phone number not verified"
-          });
+        res.status(200).json({
+          error: 1,
+          message: "User not found/Phone number not verified"
+        });
       }
     } else {
       res.status(200).json({ error: 1, message: "Phone/Password is missing" });
