@@ -78,12 +78,13 @@ exports.help = async (req, res, next) => {
 
   try {
     const findHelp = await Help.findOne({ _id: helpId });
+    const findHelper = await Helper.findOne({ _id: userId });
     if (findHelp.status) {
       return res.status(200).json({
         error: 1,
         message: "Help is under delivery for this area."
       });
-    } else {
+    } else if (findHelper.claims.length < 1) {
       const updateHelp = await Help.findOneAndUpdate(
         { _id: helpId },
         {
@@ -107,6 +108,11 @@ exports.help = async (req, res, next) => {
           help: updateHelp
         });
       }
+    } else {
+      return res.status(200).json({
+        error: 1,
+        message: "Maximum one help can be claimed at a time"
+      });
     }
   } catch (err) {
     next(err);
@@ -116,7 +122,7 @@ exports.help = async (req, res, next) => {
 // Help delivered for an area
 exports.helpDone = async (req, res, next) => {
   const { userId } = res.locals;
-  const { helpId, lat, lng } = req.query;
+  const { helpId } = req.query;
 
   if (!userId) {
     return res
@@ -125,51 +131,35 @@ exports.helpDone = async (req, res, next) => {
   }
 
   if (helpId) {
-    const findHelp = await Help.findOne({
-      area: {
-        $geoIntersects: {
-          $geometry: { type: "Point", coordinates: [lat, lng] }
-        }
-      }
-    });
-
     let photoUrl = `${process.env.S3_CF}/${req.file.key}`;
     if (photoUrl) {
-      let verifyHelp = findHelp._id.toString() === helpId;
-      if (findHelp && verifyHelp) {
-        const updateHelpAfterDelivery = await Help.findOneAndUpdate(
-          { _id: helpId },
-          {
-            $set: { status: 0 },
-            $push: { helped_by: mongoose.Types.ObjectId(userId) }
-          },
-          { new: true }
-        );
+      const updateHelpAfterDelivery = await Help.findOneAndUpdate(
+        { _id: helpId },
+        {
+          $set: { status: 0 },
+          $push: { helped_by: mongoose.Types.ObjectId(userId) }
+        },
+        { new: true }
+      );
 
-        const updateHelper = await Helper.findOneAndUpdate(
-          { _id: userId },
-          {
-            $push: {
-              helps: {
-                photo: photoUrl,
-                helpId: mongoose.Types.ObjectId(helpId)
-              }
-            },
-            $pull: { claims: mongoose.Types.ObjectId(helpId) }
+      const updateHelper = await Helper.findOneAndUpdate(
+        { _id: userId },
+        {
+          $push: {
+            helps: {
+              photo: photoUrl,
+              helpId: mongoose.Types.ObjectId(helpId)
+            }
           },
-          { new: true }
-        );
+          $pull: { claims: mongoose.Types.ObjectId(helpId) }
+        },
+        { new: true }
+      );
 
-        if (updateHelpAfterDelivery && updateHelper) {
-          return res
-            .status(200)
-            .json({ error: 0, message: "Help was delivered successfully!" });
-        }
-      } else {
-        return res.status(200).json({
-          error: 1,
-          message: "It seems you are not at the location"
-        });
+      if (updateHelpAfterDelivery && updateHelper) {
+        return res
+          .status(200)
+          .json({ error: 0, message: "Help was delivered successfully!" });
       }
     }
   } else {

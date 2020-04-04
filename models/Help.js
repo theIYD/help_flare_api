@@ -14,6 +14,10 @@ const helpSchema = new Schema(
         required: true
       }
     },
+    place: {
+      type: String,
+      required: false
+    },
     reported_by: {
       type: String,
       required: true

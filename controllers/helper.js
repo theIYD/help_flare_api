@@ -38,6 +38,7 @@ exports.registerHelper = async (req, res, next) => {
       if (locality.lat && locality.lng) {
         helper.locality.lat = locality.lat;
         helper.locality.lng = locality.lng;
+        helper.locality.place = locality.place;
 
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 12);

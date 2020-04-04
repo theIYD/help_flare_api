@@ -23,6 +23,10 @@ const helperSchema = new Schema(
       lng: {
         type: Number,
         required: true
+      },
+      place: {
+        type: String,
+        required: false
       }
     },
     password: {
@@ -48,7 +52,11 @@ const helperSchema = new Schema(
         ref: "Help",
         default: []
       }
-    ]
+    ],
+    verified: {
+      type: Boolean,
+      default: false
+    }
   },
   {
     timestamps: {
