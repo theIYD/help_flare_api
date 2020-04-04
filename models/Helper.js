@@ -39,8 +39,7 @@ const helperSchema = new Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: "Help"
         },
-        photo: String,
-        default: []
+        photo: String
       }
     ],
     claims: [
