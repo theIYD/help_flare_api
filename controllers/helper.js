@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const OTP = require("automatic-otp");
 
 const Helper = require("../models/Helper");
+const Help = require("../models/Help");
 
 const { createAccessToken, sendAccessToken } = require("../middlwares/token");
 const { sendOTP, otpConfirmed } = require("../middlwares/otp");
@@ -25,7 +26,7 @@ exports.registerHelper = async (req, res, next) => {
         .status(200)
         .json({ error: 1, message: "Phone number is already registered" });
     } else {
-      locality = JSON.parse(locality);
+      // locality = JSON.parse(locality);
       let helper = {
         group_name,
         representative,
@@ -80,18 +81,37 @@ exports.verifyOTP = async (req, res, next) => {
   if (otp) {
     try {
       const findHelper = await Helper.findOne({ otp });
-      if (!findHelper.isVerified) {
-        findHelper.isVerified = true;
-        findHelper.otp = undefined;
-        const upgradeHelper = await findHelper.save();
-        if (upgradeHelper) {
-          const sendConfirmationMessage = await otpConfirmed({
-            phone: findHelper.contact
-          });
-          res.status(200).json({ error: 0, message: "OTP verified" });
+      const findHelp = await Help.findOne({ otp });
+      if (findHelper && !findHelp) {
+        if (!findHelper.isVerified) {
+          findHelper.isVerified = true;
+          findHelper.otp = undefined;
+          const upgradeHelper = await findHelper.save();
+          if (upgradeHelper) {
+            const sendConfirmationMessage = await otpConfirmed({
+              phone: findHelper.contact,
+              message: `Thank you for registering with us on COVID app`
+            });
+            res.status(200).json({ error: 0, message: "OTP verified" });
+          }
+        } else {
+          res.status(200).json({ error: 0, message: "OTP already verified" });
         }
-      } else {
-        res.status(200).json({ error: 0, message: "OTP already verified" });
+      } else if (findHelp && !findHelper) {
+        if (!findHelp.isVerified) {
+          findHelp.isVerified = true;
+          findHelp.otp = undefined;
+          const upgradeHelp = await findHelp.save();
+          if (upgradeHelp) {
+            const sendConfirmationMessage = await otpConfirmed({
+              phone: findHelp.phone,
+              message: `Thank you for reporting a help`
+            });
+            res.status(200).json({ error: 0, message: "OTP verified" });
+          }
+        } else {
+          res.status(200).json({ error: 0, message: "OTP already verified" });
+        }
       }
     } catch (err) {
       console.log(err);

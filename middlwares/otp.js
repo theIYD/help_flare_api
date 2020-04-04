@@ -39,7 +39,7 @@ const sendOTP = async data => {
 
 const otpConfirmed = async data => {
   let params = {
-    Message: `Thank you for registering with us on COVID app`,
+    Message: data.message,
     PhoneNumber: data.phone
   };
 

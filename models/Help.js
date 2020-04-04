@@ -40,7 +40,10 @@ const helpSchema = new Schema(
         ref: "Helper",
         default: []
       }
-    ]
+    ],
+    otp: {
+      type: String
+    }
   },
   {
     timestamps: {

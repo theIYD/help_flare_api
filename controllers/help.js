@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const Help = require("../models/Help");
 const Helper = require("../models/Helper");
 
+const { sendOTP, otpConfirmed } = require("../middlwares/otp");
+
 // Report a help
 exports.reportHelp = async (req, res, next) => {
   let coords = JSON.parse(req.body.area_coordinates);
@@ -22,15 +24,23 @@ exports.reportHelp = async (req, res, next) => {
       newHelp.area.coordinates[0][0][0],
       newHelp.area.coordinates[0][0][1]
     ]);
+    let response = await sendOTP({ phone: req.body.phone });
+    if (response.success) {
+      newHelp.otp = response.otp;
+      const helpInstance = new Help(newHelp);
+      const saveHelpInstance = await helpInstance.save();
 
-    const helpInstance = new Help(newHelp);
-    const saveHelpInstance = await helpInstance.save();
-
-    if (saveHelpInstance) {
-      res.status(201).json({
-        error: 0,
-        message: "Thank you for reporting",
-        helpId: helpInstance._id
+      if (saveHelpInstance) {
+        res.status(201).json({
+          error: 0,
+          message: "Thank you for reporting",
+          helpId: helpInstance._id
+        });
+      }
+    } else {
+      return res.status(500).json({
+        error: 1,
+        message: "OTP could not be generated. Try again"
       });
     }
   } catch (err) {
