@@ -13,7 +13,7 @@
         - representative
         - phone
         - password
-        - locality (object of lat and lng)
+        - locality (object of lat,lng and place)
         - social_service (optional: Should be stringified array)
 
     Registeration of social service groups/NGOs
@@ -48,7 +48,7 @@
 
     Query Params: none
     FormData:
-        - area_coordinates https://ibb.co/SsVvZYt
+        - area_coordinates https://ibb.co/SsVvZYt (send `place` along with this in a object e.g `{ area_coordinates: [], place: "Andheri" }`)
         - reported_by (name)
         - phone
         - helpType (description of help needed, should be a stringified array)
@@ -110,8 +110,6 @@ socket.on("helps", data => {
 
     Query Params:
         - helpId
-        - lat
-        - lng
 
     Authorization: Bearer <token>
     FormData:
