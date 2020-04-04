@@ -73,6 +73,7 @@ exports.getHelps = async (io, socket) => {
 
 // Help an area
 exports.help = async (req, res, next) => {
+  const { userId } = res.locals;
   const helpId = req.query.helpId;
 
   try {
@@ -91,7 +92,15 @@ exports.help = async (req, res, next) => {
         { new: true }
       );
 
-      if (updateHelp) {
+      const updateHelper = await Helper.findOneAndUpdate(
+        { _id: userId },
+        {
+          $push: { claims: mongoose.Types.ObjectId(helpId) }
+        },
+        { new: true }
+      );
+
+      if (updateHelp && updateHelper) {
         res.status(200).json({
           error: 0,
           message: `Helper was assigned the help.`,
@@ -145,7 +154,8 @@ exports.helpDone = async (req, res, next) => {
                 photo: photoUrl,
                 helpId: mongoose.Types.ObjectId(helpId)
               }
-            }
+            },
+            $pull: { claims: mongoose.Types.ObjectId(helpId) }
           },
           { new: true }
         );

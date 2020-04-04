@@ -98,10 +98,12 @@ exports.profile = async (req, res, next) => {
   const { userId } = res.locals;
 
   try {
-    const helper = await Helper.findOne({ _id: userId }).populate({
-      path: "helps.helpId",
-      select: "-helped_by"
-    });
+    const helper = await Helper.findOne({ _id: userId })
+      .populate({
+        path: "helps.helpId",
+        select: "-helped_by"
+      })
+      .populate({ path: "claims", select: "-helped_by" });
     if (helper) {
       let {
         group_name,
@@ -109,7 +111,8 @@ exports.profile = async (req, res, next) => {
         contact,
         locality,
         social_service,
-        helps
+        helps,
+        claims
       } = helper;
 
       if (social_service) {
@@ -121,7 +124,8 @@ exports.profile = async (req, res, next) => {
             contact,
             locality,
             social_service,
-            helps
+            helps,
+            claims
           }
         });
       } else {
@@ -132,7 +136,8 @@ exports.profile = async (req, res, next) => {
             representative,
             contact,
             locality,
-            helps
+            helps,
+            claims
           }
         });
       }
