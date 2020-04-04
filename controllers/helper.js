@@ -125,7 +125,7 @@ exports.login = async (req, res, next) => {
 
   try {
     if (phone && password) {
-      const user = await Helper.findOne({ contact: phone });
+      const user = await Helper.findOne({ contact: phone, isVerified: true });
       if (user) {
         let isPasswordEqual = await bcrypt.compare(password, user.password);
         if (isPasswordEqual) {
@@ -140,7 +140,12 @@ exports.login = async (req, res, next) => {
             .json({ error: 1, message: "Password is invalid" });
         }
       } else {
-        res.status(200).json({ error: 1, message: "User not found" });
+        res
+          .status(200)
+          .json({
+            error: 1,
+            message: "User not found/Phone number not verified"
+          });
       }
     } else {
       res.status(200).json({ error: 1, message: "Phone/Password is missing" });
