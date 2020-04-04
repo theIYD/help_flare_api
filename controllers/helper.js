@@ -165,10 +165,32 @@ exports.login = async (req, res, next) => {
             .json({ error: 1, message: "Password is invalid" });
         }
       } else {
-        res.status(200).json({
-          error: 1,
-          message: "User not found/Phone number not verified"
+        const findUnverifiedUser = await Helper.findOne({
+          contact: phone,
+          isVerified: false
         });
+        if (findUnverifiedUser) {
+          let response = await sendOTP({ phone: findUnverifiedUser.contact });
+          if (response.success) {
+            findUnverifiedUser.otp = response.otp;
+            const saveFindHelperInstance = await findUnverifiedUser.save();
+            if (saveFindHelperInstance) {
+              return res
+                .status(200)
+                .json({ error: 0, message: "OTP was sent" });
+            }
+          } else {
+            return res.status(500).json({
+              error: 1,
+              message: "OTP could not be generated. Try again"
+            });
+          }
+        } else {
+          return res.status(200).json({
+            error: 1,
+            message: "User not found"
+          });
+        }
       }
     } else {
       res.status(200).json({ error: 1, message: "Phone/Password is missing" });
