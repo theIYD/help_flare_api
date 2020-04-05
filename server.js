@@ -1,4 +1,7 @@
+const fs = require("fs");
+const path = require("path");
 const express = require("express");
+const morgan = require("morgan");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv").config();
@@ -12,12 +15,12 @@ mongoose
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
-  .then(result => {
+  .then((result) => {
     console.log("Database is connected");
   })
-  .catch(err => console.log(err));
+  .catch((err) => console.log(err));
 
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Credentials", true);
@@ -36,11 +39,19 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); //Parse URL-encoded bodies
 
+// create a write stream (in append mode)
+var accessLogStream = fs.createWriteStream(path.join(__dirname, "access.log"), {
+  flags: "a",
+});
+
+// setup the logger
+app.use(morgan("combined", { stream: accessLogStream }));
+
 // Home route
 app.get("/", (req, res, next) => {
   res.json({
     error: 0,
-    message: "COVID Help API"
+    message: "COVID Help API",
   });
 });
 
@@ -57,7 +68,7 @@ process.on("unhandledRejection", (err, promise) => {
 
 // Listen on a port
 const port = process.env.PORT || 1100;
-let server = app.listen(port, err => {
+let server = app.listen(port, (err) => {
   if (err) {
     console.log(`Error while starting the server on port ${port}`);
   } else {
@@ -67,6 +78,6 @@ let server = app.listen(port, err => {
 
 const io = require("socket.io").listen(server);
 const getHelpsSocket = require("./controllers/help");
-io.sockets.on("connection", socket => {
+io.sockets.on("connection", (socket) => {
   getHelpsSocket.getHelps(io, socket);
 });
