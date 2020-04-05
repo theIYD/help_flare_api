@@ -6,22 +6,28 @@ const snsConfig = new AWS.SNS({
   accessKeyId: process.env.S3_ACCESSKEY,
   secretAccessKey: process.env.S3_SECRETKEY,
   region: process.env.S3_REGION,
-  apiVersion: "2010-03-31"
+  apiVersion: "2010-03-31",
 });
 
-const sendOTP = async data => {
+const sendOTP = async (data) => {
   const otp = new OTP();
 
   let generatedOTP = otp.generate(6, {
     digits: true,
     specialCharacters: false,
     alphabetToUpperCase: false,
-    alphabet: false
+    alphabet: false,
   });
 
   let params = {
     Message: `Your One-Time Password for COVID app is ${generatedOTP.token}`,
-    PhoneNumber: data.phone
+    PhoneNumber: data.phone,
+    MessageAttributes: {
+      "AWS.SNS.SMS.SMSType": {
+        DataType: "String",
+        StringValue: "Transactional",
+      },
+    },
   };
 
   // Send sms
@@ -37,10 +43,10 @@ const sendOTP = async data => {
   }
 };
 
-const otpConfirmed = async data => {
+const otpConfirmed = async (data) => {
   let params = {
     Message: data.message,
-    PhoneNumber: data.phone
+    PhoneNumber: data.phone,
   };
 
   // Send sms
