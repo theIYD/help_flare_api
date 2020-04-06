@@ -61,10 +61,10 @@ exports.getHelps = async (io, socket) => {
             coordinates: [data.lat, data.lng].map(parseFloat),
           },
           $minDistance: 0,
-          $maxDistance: 1000,
+          $maxDistance: 10000,
         },
       },
-      isVerified: true,
+      otp: { $exists: false },
     };
 
     try {
