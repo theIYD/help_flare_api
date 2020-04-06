@@ -44,8 +44,15 @@ var accessLogStream = fs.createWriteStream(path.join(__dirname, "access.log"), {
   flags: "a",
 });
 
-// setup the logger
-app.use(morgan("combined", { stream: accessLogStream }));
+// Setup the logger
+app.use(
+  morgan(
+    "[:date[web]] :method :url :status :response-time ms - :res[content-length]",
+    {
+      stream: accessLogStream,
+    }
+  )
+);
 
 // Home route
 app.get("/", (req, res, next) => {
@@ -53,6 +60,19 @@ app.get("/", (req, res, next) => {
     error: 0,
     message: "COVID Help API",
   });
+});
+
+// Show logs from access.log file
+app.get("/covid/logs", (req, res, next) => {
+  let fileLocation = path.join(__dirname, "access.log");
+
+  const stream = fs.createReadStream(fileLocation);
+  stream.on("error", function (error) {
+    res.writeHead(404, "Not Found");
+    res.end();
+  });
+
+  stream.pipe(res);
 });
 
 // Use all the routes
