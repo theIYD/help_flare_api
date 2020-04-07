@@ -139,6 +139,10 @@ exports.verifyOTP = async (req, res, next) => {
         } else {
           res.status(200).json({ error: 0, message: "OTP already verified" });
         }
+      } else if (!findHelp && !findHelper) {
+        res
+          .status(200)
+          .json({ error: 1, message: "Entered OTP was incorrect" });
       }
     } catch (err) {
       console.log(err);
