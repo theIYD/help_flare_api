@@ -144,14 +144,7 @@ exports.helpDone = async (req, res, next) => {
   if (helpId) {
     let photoUrl = `${process.env.S3_CF}/${req.file.key}`;
     if (photoUrl) {
-      const updateHelpAfterDelivery = await Help.findOneAndUpdate(
-        { _id: helpId },
-        {
-          $set: { status: 0 },
-          $push: { helped_by: mongoose.Types.ObjectId(userId) },
-        },
-        { new: true }
-      );
+      const updateHelpAfterDelivery = await Help.deleteOne({ _id: helpId });
 
       const updateHelper = await Helper.findOneAndUpdate(
         { _id: userId },
