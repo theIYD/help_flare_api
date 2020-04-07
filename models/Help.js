@@ -41,6 +41,10 @@ const helpSchema = new Schema(
         default: [],
       },
     ],
+    message: {
+      type: String,
+      required: true,
+    },
     otp: {
       type: String,
     },

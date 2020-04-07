@@ -17,6 +17,7 @@ exports.reportHelp = async (req, res, next) => {
     phone: req.body.phone,
     type_of_help: JSON.parse(req.body.helpType),
     place: req.body.place,
+    message: req.body.message,
   };
 
   try {
