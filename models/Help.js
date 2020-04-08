@@ -6,58 +6,58 @@ const helpSchema = new Schema(
     area: {
       coordinates: {
         type: [Array],
-        required: true,
+        required: true
       },
       type: {
         type: String,
         enum: ["Polygon"],
-        required: true,
-      },
+        required: true
+      }
     },
     place: {
       type: String,
-      required: false,
+      required: false
     },
     reported_by: {
       type: String,
-      required: true,
+      required: true
     },
     phone: {
       type: String,
-      required: true,
+      required: true
     },
     type_of_help: {
       type: Array,
-      required: true,
+      required: true
     },
     status: {
       type: Number,
-      default: 0,
+      default: 0
     },
     helped_by: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Helper",
-        default: [],
-      },
+        default: []
+      }
     ],
     message: {
       type: String,
-      required: true,
+      required: true
     },
     otp: {
-      type: String,
-    },
+      type: String
+    }
   },
   {
     timestamps: {
-      createdAt: "created_at",
-    },
+      createdAt: "created_at"
+    }
   }
 );
 
 helpSchema.index({
-  area: "2dsphere",
+  area: "2dsphere"
 });
 
 module.exports = mongoose.model("Help", helpSchema, "helps");

@@ -14,7 +14,7 @@ exports.registerHelper = async (req, res, next) => {
     representative,
     phone,
     password,
-    social_service,
+    social_service
   } = req.body;
 
   let { locality } = req.body;
@@ -22,7 +22,7 @@ exports.registerHelper = async (req, res, next) => {
   try {
     const findHelper = await Helper.findOne({
       contact: phone,
-      isVerified: false,
+      isVerified: false
     });
     if (findHelper) {
       let response = await sendOTP({ phone: findHelper.contact });
@@ -37,19 +37,19 @@ exports.registerHelper = async (req, res, next) => {
       } else {
         return res.status(500).json({
           error: 1,
-          message: "OTP could not be generated. Try again",
+          message: "OTP could not be generated. Try again"
         });
       }
     } else {
       const alreadyRegistered = await Helper.findOne({
         contact: phone,
-        isVerified: true,
+        isVerified: true
       });
 
       if (alreadyRegistered) {
         return res.status(200).json({
           error: 1,
-          message: "Account is already registered with this phone number",
+          message: "Account is already registered with this phone number"
         });
       } else {
         locality = JSON.parse(locality);
@@ -57,7 +57,7 @@ exports.registerHelper = async (req, res, next) => {
           group_name,
           representative,
           contact: phone,
-          locality: {},
+          locality: {}
         };
 
         if (social_service) {
@@ -86,7 +86,7 @@ exports.registerHelper = async (req, res, next) => {
             } else {
               return res.status(500).json({
                 error: 1,
-                message: "OTP could not be generated. Try again",
+                message: "OTP could not be generated. Try again"
               });
             }
           }
@@ -161,7 +161,7 @@ exports.login = async (req, res, next) => {
         let isPasswordEqual = await bcrypt.compare(password, user.password);
         if (isPasswordEqual) {
           const accessToken = createAccessToken({
-            userId: user._id,
+            userId: user._id
           });
 
           sendAccessToken(req, res, accessToken);
@@ -173,7 +173,7 @@ exports.login = async (req, res, next) => {
       } else {
         const findUnverifiedUser = await Helper.findOne({
           contact: phone,
-          isVerified: false,
+          isVerified: false
         });
         if (findUnverifiedUser) {
           let response = await sendOTP({ phone: findUnverifiedUser.contact });
@@ -188,13 +188,13 @@ exports.login = async (req, res, next) => {
           } else {
             return res.status(500).json({
               error: 1,
-              message: "OTP could not be generated. Try again",
+              message: "OTP could not be generated. Try again"
             });
           }
         } else {
           return res.status(200).json({
             error: 1,
-            message: "User not found",
+            message: "User not found"
           });
         }
       }
@@ -214,7 +214,7 @@ exports.profile = async (req, res, next) => {
     const helper = await Helper.findOne({ _id: userId })
       .populate({
         path: "helps.helpId",
-        select: "-helped_by",
+        select: "-helped_by"
       })
       .populate({ path: "claims", select: "-helped_by" });
     if (helper) {
@@ -225,7 +225,7 @@ exports.profile = async (req, res, next) => {
         locality,
         social_service,
         helps,
-        claims,
+        claims
       } = helper;
 
       if (social_service) {
@@ -238,8 +238,8 @@ exports.profile = async (req, res, next) => {
             locality,
             social_service,
             helps,
-            claims,
-          },
+            claims
+          }
         });
       } else {
         return res.status(200).json({
@@ -250,8 +250,8 @@ exports.profile = async (req, res, next) => {
             contact,
             locality,
             helps,
-            claims,
-          },
+            claims
+          }
         });
       }
     }

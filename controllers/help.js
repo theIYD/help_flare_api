@@ -11,19 +11,19 @@ exports.reportHelp = async (req, res, next) => {
   let newHelp = {
     area: {
       coordinates: [coords],
-      type: "Polygon",
+      type: "Polygon"
     },
     reported_by: req.body.reported_by,
     phone: req.body.phone,
     type_of_help: JSON.parse(req.body.helpType),
     place: req.body.place,
-    message: req.body.message,
+    message: req.body.message
   };
 
   try {
     newHelp.area.coordinates[0].push([
       newHelp.area.coordinates[0][0][0],
-      newHelp.area.coordinates[0][0][1],
+      newHelp.area.coordinates[0][0][1]
     ]);
     let response = await sendOTP({ phone: req.body.phone });
     if (response.success) {
@@ -35,13 +35,13 @@ exports.reportHelp = async (req, res, next) => {
         res.status(201).json({
           error: 0,
           message: "Thank you for reporting",
-          helpId: helpInstance._id,
+          helpId: helpInstance._id
         });
       }
     } else {
       return res.status(500).json({
         error: 1,
-        message: "OTP could not be generated. Try again",
+        message: "OTP could not be generated. Try again"
       });
     }
   } catch (err) {
@@ -59,13 +59,13 @@ exports.getHelps = async (io, socket) => {
         $near: {
           $geometry: {
             type: "Point",
-            coordinates: [data.lat, data.lng].map(parseFloat),
+            coordinates: [data.lat, data.lng].map(parseFloat)
           },
           $minDistance: 0,
-          $maxDistance: 10000,
-        },
+          $maxDistance: 10000
+        }
       },
-      otp: { $exists: false },
+      otp: { $exists: false }
     };
 
     try {
@@ -93,13 +93,13 @@ exports.help = async (req, res, next) => {
     if (findHelp.status) {
       return res.status(200).json({
         error: 1,
-        message: "Help is under delivery for this area.",
+        message: "Help is under delivery for this area."
       });
     } else if (findHelper.claims.length < 1) {
       const updateHelp = await Help.findOneAndUpdate(
         { _id: helpId },
         {
-          $set: { status: 1 },
+          $set: { status: 1 }
         },
         { new: true }
       );
@@ -107,7 +107,7 @@ exports.help = async (req, res, next) => {
       const updateHelper = await Helper.findOneAndUpdate(
         { _id: userId },
         {
-          $push: { claims: mongoose.Types.ObjectId(helpId) },
+          $push: { claims: mongoose.Types.ObjectId(helpId) }
         },
         { new: true }
       );
@@ -116,13 +116,13 @@ exports.help = async (req, res, next) => {
         res.status(200).json({
           error: 0,
           message: `Helper was assigned the help.`,
-          help: updateHelp,
+          help: updateHelp
         });
       }
     } else {
       return res.status(200).json({
         error: 1,
-        message: "Maximum one help can be claimed at a time",
+        message: "Maximum one help can be claimed at a time"
       });
     }
   } catch (err) {
@@ -152,10 +152,10 @@ exports.helpDone = async (req, res, next) => {
           $push: {
             helps: {
               photo: photoUrl,
-              helpId: mongoose.Types.ObjectId(helpId),
-            },
+              helpId: mongoose.Types.ObjectId(helpId)
+            }
           },
-          $pull: { claims: mongoose.Types.ObjectId(helpId) },
+          $pull: { claims: mongoose.Types.ObjectId(helpId) }
         },
         { new: true }
       );

@@ -6,7 +6,7 @@ const snsConfig = new AWS.SNS({
   accessKeyId: process.env.S3_ACCESSKEY,
   secretAccessKey: process.env.S3_SECRETKEY,
   region: process.env.S3_REGION,
-  apiVersion: "2010-03-31",
+  apiVersion: "2010-03-31"
 });
 
 const sendOTP = async (data) => {
@@ -16,7 +16,7 @@ const sendOTP = async (data) => {
     digits: true,
     specialCharacters: false,
     alphabetToUpperCase: false,
-    alphabet: false,
+    alphabet: false
   });
 
   let params = {
@@ -25,9 +25,9 @@ const sendOTP = async (data) => {
     MessageAttributes: {
       "AWS.SNS.SMS.SMSType": {
         DataType: "String",
-        StringValue: "Transactional",
-      },
-    },
+        StringValue: "Transactional"
+      }
+    }
   };
 
   // Send sms
@@ -46,7 +46,7 @@ const sendOTP = async (data) => {
 const otpConfirmed = async (data) => {
   let params = {
     Message: data.message,
-    PhoneNumber: data.phone,
+    PhoneNumber: data.phone
   };
 
   // Send sms

@@ -27,7 +27,7 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
-const createAccessToken = user => {
+const createAccessToken = (user) => {
   return sign({ user }, process.env.JWT_SECRET, { expiresIn: "1d" });
 };
 

@@ -20,10 +20,10 @@ const fileFilter = (req, file, cb) => {
 const multerS3Config = multerS3({
   s3: s3Config,
   bucket: process.env.S3_BUCKET_NAME + "/photos",
-  metadata: function(req, file, cb) {
+  metadata: function (req, file, cb) {
     cb(null, { fieldName: file.fieldname });
   },
-  key: function(req, file, cb) {
+  key: function (req, file, cb) {
     console.log("from multers3", file);
     cb(null, new Date().toISOString() + "-" + file.originalname);
   }
@@ -33,7 +33,7 @@ const upload = multer({
   storage: multerS3Config,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 1024 * 1024 * 10 // we are allowing only 5 MB files
+    fileSize: 1024 * 1024 * 10 // we are allowing only 10 MB files
   }
 });
 
