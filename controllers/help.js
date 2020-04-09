@@ -65,7 +65,7 @@ exports.getHelps = async (io, socket) => {
           $maxDistance: 10000
         }
       },
-      $not: { status: 2 },
+      status: { $ne: 2 },
       otp: { $exists: false }
     };
 
