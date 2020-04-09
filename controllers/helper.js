@@ -209,7 +209,6 @@ exports.login = async (req, res, next) => {
 // Profile route
 exports.profile = async (req, res, next) => {
   const { userId } = res.locals;
-
   try {
     const helper = await Helper.findOne({ _id: userId })
       .populate({
@@ -257,5 +256,17 @@ exports.profile = async (req, res, next) => {
     }
   } catch (err) {
     next(err);
+  }
+};
+
+exports.publicProfile = async (req, res, next) => {
+  const { org_name } = req.params;
+  if (org_name) {
+    try {
+      const profile = await Helper.findOne({ group_name: org_name });
+      res.status(200).json({ error: 0, profile });
+    } catch (err) {
+      next(err);
+    }
   }
 };

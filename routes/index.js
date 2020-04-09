@@ -30,4 +30,8 @@ router
   .route("/profile")
   .get(verifyToken, upload.none(), helperController.profile);
 
+router
+  .route("/profile/:org_name")
+  .get(upload.none(), helperController.publicProfile);
+
 module.exports = router;
