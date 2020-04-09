@@ -259,12 +259,17 @@ exports.profile = async (req, res, next) => {
   }
 };
 
+// Public profile
 exports.publicProfile = async (req, res, next) => {
   const { org_name } = req.params;
   if (org_name) {
     try {
       const profile = await Helper.findOne({ group_name: org_name });
-      res.status(200).json({ error: 0, profile });
+      if (profile) {
+        res.status(200).json({ error: 0, profile });
+      } else {
+        res.status(200).json({ error: 1, profile });
+      }
     } catch (err) {
       next(err);
     }
