@@ -65,6 +65,7 @@ exports.getHelps = async (io, socket) => {
           $maxDistance: 10000
         }
       },
+      $not: { status: 2 },
       otp: { $exists: false }
     };
 
@@ -144,7 +145,11 @@ exports.helpDone = async (req, res, next) => {
   if (helpId) {
     let photoUrl = `${process.env.S3_CF}/${req.file.key}`;
     if (photoUrl) {
-      const updateHelpAfterDelivery = await Help.deleteOne({ _id: helpId });
+      const updateHelpAfterDelivery = await Help.findOneAndUpdate(
+        { _id: helpId },
+        { $set: { status: 2 } },
+        { new: true }
+      );
 
       const updateHelper = await Helper.findOneAndUpdate(
         { _id: userId },
