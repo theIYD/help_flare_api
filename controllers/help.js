@@ -131,6 +131,41 @@ exports.help = async (req, res, next) => {
   }
 };
 
+// Cancel help
+exports.cancelHelp = async (req, res, next) => {
+  const { userId } = res.locals;
+  const helpId = req.query.helpId;
+
+  try {
+    const updateHelp = await Help.findOneAndUpdate(
+      { _id: helpId },
+      {
+        $set: { status: 0 }
+      },
+      { new: true }
+    );
+
+    const updateHelper = await Helper.findOneAndUpdate(
+      { _id: userId },
+      {
+        $pull: { claims: mongoose.Types.ObjectId(helpId) }
+      },
+      { new: true }
+    );
+
+    if (updateHelp && updateHelper) {
+      res.status(200).json({
+        error: 0,
+        message: `Helper cancelled the claim.`,
+        help: updateHelp,
+        helper: updateHelper
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
 // Help delivered for an area
 exports.helpDone = async (req, res, next) => {
   const { userId } = res.locals;
