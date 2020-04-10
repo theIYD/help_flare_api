@@ -20,6 +20,11 @@ router.route("/report_help").post(upload.none(), helpController.reportHelp);
 // Help
 router.route("/help").post(verifyToken, upload.none(), helpController.help);
 
+// Cancel Help
+router
+  .route("/help/cancel")
+  .post(verifyToken, upload.none(), helpController.cancelHelp);
+
 // Help was delivered
 router
   .route("/help/verify")

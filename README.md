@@ -84,7 +84,7 @@ socket.emit("new_help", { lat: pos.lat, lng: pos.lng });
 4. Listen for new helps to be displayed onto the Google map
 
 ```javascript
-socket.on("helps", data => {
+socket.on("helps", (data) => {
   console.log(data);
   // => Report objects are received
 });
@@ -103,6 +103,19 @@ socket.on("helps", data => {
     FormData: none
 
     Assign the help to the logged in helper
+
+</details>
+
+<details>
+    <summary><b>POST /help/cancel</b></summary>
+
+    Query Params:
+        - helpId
+
+    Authorization: Bearer <token>
+    FormData: none
+
+    Cancel the claim
 
 </details>
 
