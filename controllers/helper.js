@@ -264,7 +264,12 @@ exports.publicProfile = async (req, res, next) => {
   const { org_name } = req.params;
   if (org_name) {
     try {
-      const profile = await Helper.findOne({ group_name: org_name });
+      const profile = await Helper.findOne({ group_name: org_name })
+        .populate({
+          path: "helps.helpId",
+          select: "-helped_by"
+        })
+        .populate({ path: "claims", select: "-helped_by" });
       if (profile) {
         res.status(200).json({ error: 0, profile });
       } else {
