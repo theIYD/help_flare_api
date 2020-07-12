@@ -1,8 +1,13 @@
-# COVID Help API
+# Help Flare API
 
-#### Dev Base URL: https://https://covid-project-api.herokuapp.com/
+![Help Flare](./docs/hero.jpg)
 
-## Routes
+### About
+During the 2020 COVID-19 pandemic lockdown in India, good Samaritans and NGOs stepped up to help under-privileged localities with basic needs like food, water, sanitation, etc.
+
+To help their efforts, I along with ![@burhanuday](https://github.com/burhanuday) and ![@SBhanushali](https://github.com/SBhanushali) created an app that used Geo-fencing technology to highlight communities that were in need.
+
+### Routes
 
 <details>
     <summary><b>POST /helper</b></summary>
@@ -66,7 +71,7 @@
 1. Initialize socket on the client
 
 ```javascript
-let socket = io("https://https://covid-project-api.herokuapp.com/");
+let socket = io("https://covid-project-api.herokuapp.com/");
 ```
 
 2. On getting the location of the device from the browser, emit an event to get new helps
